@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRL</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c14;
+  --bg2: #0d1420;
+  --bg3: #121a28;
+  --card: #111827;
+  --card2: #1a2438;
+  --teal: #00e5c3;
+  --teal2: #00b89a;
+  --amber: #f59e0b;
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+  --red: #ef4444;
+  --text: #f0f4ff;
+  --text2: #8fa3bf;
+  --text3: #4a6080;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(0,229,195,0.25);
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--teal2); border-radius: 3px; }
+
+/* ─── NAV ─────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(8,12,20,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 2.5rem;
+  height: 60px;
+  gap: 2rem;
+}
+
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; flex-shrink: 0;
+}
+.nav-logo {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.nav-brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.nav-brand-name { font-family: var(--font-head); font-size: 14px; font-weight: 700; color: var(--text); }
+.nav-brand-sub { font-size: 10px; color: var(--text2); letter-spacing: 0.5px; }
+
+.nav-links {
+  display: flex; gap: 0; margin-left: auto;
+}
+.nav-link {
+  color: var(--text2);
+  text-decoration: none;
+  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+  font-weight: 400;
+  white-space: nowrap;
+}
+.nav-link:hover { color: var(--teal); background: rgba(0,229,195,0.06); }
+.nav-link.active { color: var(--teal); }
+
+/* ─── HERO ────────────────────────────── */
+#accueil {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 520px;
+  gap: 0;
+  padding-top: 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 60% at 20% 60%, rgba(0,229,195,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 30%, rgba(59,130,246,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-grid-overlay {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+}
+
+.hero-left {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 5rem 3rem 5rem 4rem;
+  position: relative;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(0,229,195,0.08);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  letter-spacing: 1.5px;
+  color: var(--teal);
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  width: fit-content;
+}
+.hero-badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--teal);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.hero-title {
+  font-family: var(--font-head);
+  font-size: 5.5rem;
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -2px;
+  margin-bottom: 1.5rem;
+  color: var(--text);
+}
+.hero-title .accent { color: var(--teal); }
+.hero-title .line2 { display: block; }
+
+.hero-desc {
+  font-size: 16px;
+  color: var(--text2);
+  max-width: 500px;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.hero-body {
+  font-size: 14px;
+  color: var(--text3);
+  max-width: 480px;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+}
+
+.hero-actions {
+  display: flex; gap: 12px; flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  font-family: var(--font-body);
+  text-decoration: none;
+}
+.btn-teal {
+  background: var(--teal);
+  color: #000;
+}
+.btn-teal:hover { background: #00ffda; transform: translateY(-1px); }
+.btn-ghost {
+  background: transparent;
+  color: var(--text2);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { border-color: var(--border2); color: var(--teal); background: rgba(0,229,195,0.05); }
+
+.hero-stats {
+  display: flex; gap: 2rem; margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.hero-stat-val {
+  font-family: var(--font-head);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--teal);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.hero-stat-lbl { font-size: 12px; color: var(--text3); }
+
+/* ─── HERO RIGHT PANEL ──────────────────── */
+.hero-right {
+  background: var(--bg2);
+  border-left: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  padding: 2.5rem 2rem;
+  justify-content: center;
+  position: relative;
+}
+
+.panel-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 4px; font-family: var(--font-head); }
+.panel-sub { font-size: 12px; color: var(--text3); font-family: var(--font-mono); margin-bottom: 1.5rem; }
+
+.panel-badge {
+  position: absolute; top: 2.5rem; right: 2rem;
+  background: rgba(0,229,195,0.1);
+  border: 1px solid var(--border2);
+  color: var(--teal);
+  font-size: 10px;
+  font-family: var(--font-mono);
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.cycle-items { display: flex; flex-direction: column; gap: 10px; }
+
+.cycle-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  display: flex; align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  text-decoration: none;
+}
+.cycle-item:hover { border-color: var(--border2); background: var(--card2); }
+.cycle-item.active { border-color: var(--teal); background: rgba(0,229,195,0.04); }
+
+.cycle-icon {
+  width: 42px; height: 42px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.cycle-icon.teal { background: rgba(0,229,195,0.12); }
+.cycle-icon.amber { background: rgba(245,158,11,0.12); }
+.cycle-icon.blue { background: rgba(59,130,246,0.12); }
+.cycle-icon.purple { background: rgba(139,92,246,0.12); }
+
+.cycle-label { font-size: 15px; font-weight: 500; color: var(--text); flex: 1; }
+.cycle-arrow { color: var(--text3); font-size: 18px; }
+
+.panel-code {
+  margin-top: 1.5rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text3);
+  line-height: 1.8;
+}
+.code-line .kw { color: var(--purple); }
+.code-line .fn { color: var(--blue); }
+.code-line .str { color: var(--teal); }
+.code-line .num { color: var(--amber); }
+.code-cursor {
+  display: inline-block;
+  width: 7px; height: 13px;
+  background: var(--teal);
+  vertical-align: middle;
+  animation: blink 1s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ─── SECTION BASE ───────────────────────── */
+section { padding: 6rem 4rem; position: relative; }
+section:nth-child(even) { background: var(--bg2); }
+
+.section-header { margin-bottom: 3.5rem; }
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-eyebrow::after {
+  content: '';
+  display: block;
+  height: 1px;
+  width: 50px;
+  background: var(--teal);
+  opacity: 0.4;
+}
+.section-title {
+  font-family: var(--font-head);
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -1px;
+}
+.section-desc {
+  font-size: 15px;
+  color: var(--text2);
+  max-width: 600px;
+  margin-top: 1rem;
+  line-height: 1.7;
+}
+
+/* ─── CONCEPTS ────────────────────────── */
+#concepts .concepts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.concept-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.75rem;
+  transition: border-color 0.2s, transform 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.concept-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent, var(--teal));
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.concept-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-4px); }
+.concept-card:hover::before { opacity: 1; }
+
+.concept-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text3);
+  margin-bottom: 1rem;
+}
+.concept-icon { font-size: 2rem; margin-bottom: 1rem; }
+.concept-title { font-family: var(--font-head); font-size: 18px; font-weight: 700; margin-bottom: 0.75rem; }
+.concept-body { font-size: 13px; color: var(--text2); line-height: 1.7; }
+.concept-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 1.25rem; }
+.tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.05);
+  color: var(--text3);
+  border: 1px solid var(--border);
+}
+
+/* ─── AGENT-ENV ──────────────────────── */
+#agent-environnement {
+  display: flex;
+  gap: 4rem;
+  align-items: flex-start;
+}
+#agent-environnement > div:first-child { flex: 1; }
+#agent-environnement > div:last-child { flex: 1.2; }
+
+.agent-diagram {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  position: relative;
+}
+
+.diag-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.diag-box {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  flex: 1;
+  position: relative;
+}
+.diag-box.highlight { border-color: var(--border2); }
+.diag-box-icon { font-size: 1.75rem; margin-bottom: 6px; }
+.diag-box-title { font-family: var(--font-head); font-size: 13px; font-weight: 700; }
+.diag-box-sub { font-size: 11px; color: var(--text3); font-family: var(--font-mono); }
+
+.diag-arrow {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  flex-shrink: 0;
+}
+.diag-arrow-label { font-size: 10px; color: var(--teal); font-family: var(--font-mono); text-align: center; }
+.diag-arrow-line {
+  width: 40px; height: 2px;
+  background: linear-gradient(90deg, var(--teal), var(--blue));
+  border-radius: 1px;
+  position: relative;
+}
+.diag-arrow-line::after {
+  content: '▶';
+  position: absolute; right: -8px; top: -6px;
+  font-size: 8px; color: var(--blue);
+}
+
+.reward-meter {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+.reward-label { font-family: var(--font-mono); font-size: 11px; color: var(--text3); margin-bottom: 8px; display: flex; justify-content: space-between; }
+.reward-bar-bg { height: 8px; background: var(--bg2); border-radius: 4px; overflow: hidden; }
+.reward-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--teal), var(--blue));
+  width: 72%;
+  animation: fill-anim 2s ease-out forwards;
+}
+@keyframes fill-anim { from { width: 0% } to { width: 72% } }
+
+.info-list { display: flex; flex-direction: column; gap: 1rem; }
+.info-item {
+  display: flex; gap: 1rem; align-items: flex-start;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+.info-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.info-item h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.info-item p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* ─── GRIDWORLD ──────────────────────── */
+#gridworld .gw-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.gw-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  aspect-ratio: 1;
+}
+
+.gw-cell {
+  border-radius: 8px;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  border: 1px solid transparent;
+}
+.gw-cell.empty { background: var(--card2); }
+.gw-cell.wall { background: var(--bg); border-color: var(--border); }
+.gw-cell.agent { background: rgba(0,229,195,0.15); border-color: var(--border2); }
+.gw-cell.goal { background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.3); }
+.gw-cell.trap { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3); }
+.gw-cell.path { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.2); }
+.gw-cell:hover:not(.wall) { transform: scale(1.06); filter: brightness(1.3); }
+
+.gw-val { font-family: var(--font-mono); font-size: 9px; color: var(--text3); position: absolute; bottom: 4px; right: 6px; }
+
+.gw-controls {
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.gw-info-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+.gw-info-card h4 { font-family: var(--font-head); font-size: 14px; font-weight: 700; margin-bottom: 0.75rem; color: var(--text); }
+.gw-info-card p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+.step-btn {
+  background: var(--teal);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  font-family: var(--font-body);
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.step-btn:hover { background: #00ffda; transform: translateY(-1px); }
+.step-btn.secondary {
+  background: transparent;
+  color: var(--text2);
+  border: 1px solid var(--border);
+}
+.step-btn.secondary:hover { border-color: var(--border2); color: var(--teal); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1rem; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text3); font-family: var(--font-mono); }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+/* ─── Q-LEARNING ─────────────────────── */
+#q-learning {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.q-formula {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+.q-formula h4 { font-family: var(--font-head); font-size: 13px; color: var(--text3); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+.q-eq {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--teal);
+  line-height: 2;
+  padding: 1rem;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+.q-eq .var { color: var(--blue); }
+.q-eq .op { color: var(--text3); }
+.q-eq .num { color: var(--amber); }
+
+.q-table {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.q-table-head {
+  display: grid;
+  grid-template-columns: 1fr repeat(4, 1fr);
+  background: var(--bg);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.q-th { font-family: var(--font-mono); font-size: 10px; color: var(--text3); text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+.q-th:first-child { text-align: left; }
+
+.q-row {
+  display: grid;
+  grid-template-columns: 1fr repeat(4, 1fr);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.q-row:hover { background: var(--card2); }
+.q-row:last-child { border-bottom: none; }
+.q-cell { text-align: center; font-family: var(--font-mono); font-size: 12px; }
+.q-cell:first-child { text-align: left; color: var(--text2); }
+.q-cell.high { color: var(--teal); font-weight: 700; }
+.q-cell.low { color: var(--red); }
+.q-cell.mid { color: var(--amber); }
+
+.slider-group { margin-bottom: 1.25rem; }
+.slider-head { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.slider-label { font-size: 13px; color: var(--text2); }
+.slider-val { font-family: var(--font-mono); font-size: 13px; color: var(--teal); }
+input[type=range] {
+  width: 100%;
+  appearance: none;
+  height: 4px;
+  background: var(--bg);
+  border-radius: 2px;
+  outline: none;
+  border: 1px solid var(--border);
+}
+input[type=range]::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--teal);
+  cursor: pointer;
+  border: 2px solid var(--bg);
+}
+
+/* ─── DQN ────────────────────────────── */
+#dqn .dqn-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.nn-diagram {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.nn-layer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nn-layer-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text3);
+  width: 60px;
+  flex-shrink: 0;
+  text-align: right;
+}
+.nn-nodes {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  justify-content: center;
+}
+.nn-node {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px;
+  font-family: var(--font-mono);
+  color: var(--text3);
+  transition: all 0.3s;
+  animation: node-pulse 3s ease-in-out infinite;
+}
+.nn-node.input { border-color: rgba(59,130,246,0.4); background: rgba(59,130,246,0.08); }
+.nn-node.hidden { border-color: rgba(139,92,246,0.4); background: rgba(139,92,246,0.08); }
+.nn-node.output { border-color: rgba(0,229,195,0.4); background: rgba(0,229,195,0.08); }
+.nn-node:nth-child(2n) { animation-delay: -1s; }
+.nn-node:nth-child(3n) { animation-delay: -2s; }
+@keyframes node-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; box-shadow: 0 0 10px currentColor; }
+}
+.nn-conn { font-size: 16px; color: var(--text3); flex-shrink: 0; }
+
+.dqn-features { display: flex; flex-direction: column; gap: 1rem; }
+.feature-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+  display: flex; gap: 1rem; align-items: flex-start;
+}
+.feature-icon {
+  width: 38px; height: 38px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.feature-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.feature-card p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* ─── ALGOS ──────────────────────────── */
+#applications .algo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.algo-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.algo-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.15); }
+.algo-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--accent);
+}
+.algo-name { font-family: var(--font-head); font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+.algo-full { font-family: var(--font-mono); font-size: 10px; color: var(--text3); margin-bottom: 1.25rem; }
+.algo-body { font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 1.25rem; }
+.algo-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.algo-chip {
+  font-size: 10px; font-family: var(--font-mono);
+  padding: 4px 10px; border-radius: 4px;
+  background: rgba(255,255,255,0.05);
+  color: var(--text3);
+  border: 1px solid var(--border);
+}
+
+.frameworks-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.fw-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+.fw-card:hover { border-color: rgba(255,255,255,0.15); }
+.fw-icon { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
+.fw-name { font-family: var(--font-head); font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.fw-desc { font-size: 12px; color: var(--text3); line-height: 1.5; }
+
+
+
+/* ─── ANIMATIONS ────────────────────── */
+.fade-in {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#accueil" class="nav-brand">
+    <div class="nav-logo">🧠</div>
+    <div class="nav-brand-text">
+      <span class="nav-brand-name">DRL </span>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="#accueil" class="nav-link active">Accueil</a>
+    <a href="#concepts" class="nav-link">Concepts</a>
+    <a href="#agent-environnement" class="nav-link">Agent-Environnement</a>
+    <a href="#gridworld" class="nav-link">GridWorld</a>
+    <a href="#q-learning" class="nav-link">Q-Learning</a>
+    <a href="#dqn" class="nav-link">DQN</a>
+    <a href="#applications" class="nav-link">Applications</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="accueil">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-overlay"></div>
+  <div class="hero-left">
+    <h1 class="hero-title">
+      Deep<br>
+      <span class="accent">Reinforcement</span><br>
+      <span class="line2">Learning</span><br>
+    </h1>
+    <p class="hero-desc">Apprendre le Deep RL par l'interaction, la visualisation et la simulation</p>
+    <p class="hero-body">Le Deep Reinforcement Learning combine l'apprentissage par renforcement et les réseaux de neurones afin de permettre à un agent d'apprendre par essais et erreurs dans des environnements complexes.</p>
+    <div class="hero-actions">
+      <a href="#concepts" class="btn btn-teal">Explorer les concepts →</a>
+      <a href="#gridworld" class="btn btn-ghost">▶ Démo GridWorld</a>
+    </div>
+   
+  </div>
+  
+    <div class="panel-code">
+      <div class="code-line"><span class="kw">def</span> <span class="fn">train_agent</span>(env, episodes=<span class="num">1000</span>):</div>
+      <div class="code-line">&nbsp;&nbsp;state = env.<span class="fn">reset</span>()</div>
+      <div class="code-line">&nbsp;&nbsp;<span class="kw">for</span> ep <span class="kw">in</span> <span class="fn">range</span>(episodes):</div>
+      <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;action = agent.<span class="fn">act</span>(state)</div>
+      <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;reward = env.<span class="fn">step</span>(action)</div>
+      <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;agent.<span class="fn">learn</span>(reward) <span class="code-cursor"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCEPTS -->
+<section id="concepts">
+  <div class="section-header fade-in">
+    <div class="section-eyebrow">01 — Fondements</div>
+    <h2 class="section-title">Concepts clés du Deep RL</h2>
+    <p class="section-desc">Les bases théoriques et pratiques pour comprendre comment un agent apprend à prendre des décisions optimales.</p>
+  </div>
+  <div class="concepts-grid">
+    <div class="concept-card fade-in" style="--accent:var(--teal)">
+      <div class="concept-num">// 01</div>
+      <div class="concept-icon">🧠</div>
+      <div class="concept-title">Réseau de neurones</div>
+      <div class="concept-body">Un réseau profond approxime la fonction de valeur ou de politique, permettant de généraliser sur des espaces d'états continus et de haute dimension.</div>
+      <div class="concept-tags">
+        <span class="tag">backprop</span>
+        <span class="tag">gradient descent</span>
+        <span class="tag">ReLU</span>
+      </div>
+    </div>
+    <div class="concept-card fade-in" style="--accent:var(--blue)">
+      <div class="concept-num">// 02</div>
+      <div class="concept-icon">📊</div>
+      <div class="concept-title">Fonction de valeur</div>
+      <div class="concept-body">V(s) ou Q(s,a) estime la récompense cumulée attendue à partir d'un état donné, guidant la politique de l'agent vers les décisions optimales.</div>
+      <div class="concept-tags">
+        <span class="tag">Bellman</span>
+        <span class="tag">V(s)</span>
+        <span class="tag">Q(s,a)</span>
+      </div>
+    </div>
+    <div class="concept-card fade-in" style="--accent:var(--purple)">
+      <div class="concept-num">// 03</div>
+      <div class="concept-icon">🎯</div>
+      <div class="concept-title">Politique (Policy)</div>
+      <div class="concept-body">La politique π(a|s) détermine quelle action l'agent prend dans chaque état. Elle peut être déterministe ou stochastique, directe ou dérivée de Q.</div>
+      <div class="concept-tags">
+        <span class="tag">π(a|s)</span>
+        <span class="tag">greedy</span>
+        <span class="tag">ε-greedy</span>
+      </div>
+    </div>
+    <div class="concept-card fade-in" style="--accent:var(--amber)">
+      <div class="concept-num">// 04</div>
+      <div class="concept-icon">🔁</div>
+      <div class="concept-title">Replay Buffer</div>
+      <div class="concept-body">Stocke les transitions (s,a,r,s') pour entraîner le réseau sur des mini-batches aléatoires, brisant les corrélations temporelles et stabilisant l'apprentissage.</div>
+      <div class="concept-tags">
+        <span class="tag">experience replay</span>
+        <span class="tag">mini-batch</span>
+      </div>
+    </div>
+    <div class="concept-card fade-in" style="--accent:var(--red)">
+      <div class="concept-num">// 05</div>
+      <div class="concept-icon">🎯</div>
+      <div class="concept-title">Target Network</div>
+      <div class="concept-body">Un réseau séparé dont les poids sont mis à jour périodiquement fournit des cibles stables pour le calcul de la perte TD, évitant les oscillations.</div>
+      <div class="concept-tags">
+        <span class="tag">TD error</span>
+        <span class="tag">stabilité</span>
+      </div>
+    </div>
+    <div class="concept-card fade-in" style="--accent:var(--teal)">
+      <div class="concept-num">// 06</div>
+      <div class="concept-icon">⚖️</div>
+      <div class="concept-title">Exploration vs Exploitation</div>
+      <div class="concept-body">Le dilemme fondamental : explorer de nouvelles actions pour découvrir de meilleures stratégies, ou exploiter les connaissances actuelles pour maximiser la récompense immédiate.</div>
+      <div class="concept-tags">
+        <span class="tag">ε-greedy</span>
+        <span class="tag">UCB</span>
+        <span class="tag">Boltzmann</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AGENT-ENV -->
+<section id="agent-environnement" style="display:block; padding: 6rem 4rem;">
+  <div class="section-header fade-in">
+    <div class="section-eyebrow">02 — Architecture</div>
+    <h2 class="section-title">Agent & Environnement</h2>
+    <p class="section-desc">La boucle d'interaction fondamentale du reinforcement learning : l'agent observe, agit, et apprend des retours de l'environnement.</p>
+  </div>
+  <div style="display:flex; gap:4rem; align-items:flex-start; flex-wrap:wrap">
+    <div style="flex:1; min-width:300px">
+      <div class="agent-diagram fade-in">
+        <div class="diag-row">
+          <div class="diag-box highlight">
+            <div class="diag-box-icon">🤖</div>
+            <div class="diag-box-title">Agent</div>
+            <div class="diag-box-sub">π(a|s)</div>
+          </div>
+          <div class="diag-arrow">
+            <div class="diag-arrow-label">action</div>
+            <div class="diag-arrow-line"></div>
+          </div>
+          <div class="diag-box highlight">
+            <div class="diag-box-icon">🌍</div>
+            <div class="diag-box-title">Environnement</div>
+            <div class="diag-box-sub">P(s'|s,a)</div>
+          </div>
+        </div>
+        <div class="diag-row" style="flex-direction:row-reverse; margin-bottom:1rem">
+          <div class="diag-box">
+            <div class="diag-box-icon">👁️</div>
+            <div class="diag-box-title">État s'</div>
+            <div class="diag-box-sub">observation</div>
+          </div>
+          <div class="diag-arrow" style="transform:scaleX(-1)">
+            <div class="diag-arrow-label">reward + state</div>
+            <div class="diag-arrow-line"></div>
+          </div>
+          <div class="diag-box">
+            <div class="diag-box-icon">⭐</div>
+            <div class="diag-box-title">Récompense r</div>
+            <div class="diag-box-sub">signal</div>
+          </div>
+        </div>
+        <div class="reward-meter">
+          <div class="reward-label"><span>Récompense cumulée</span><span style="color:var(--teal)">+72</span></div>
+          <div class="reward-bar-bg"><div class="reward-bar-fill"></div></div>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1.2; min-width:300px">
+      <div class="info-list fade-in">
+        <div class="info-item">
+          <div class="info-dot" style="background:var(--teal)"></div>
+          <div>
+            <h4>L'agent observe l'état</h4>
+            <p>À chaque pas de temps, l'agent reçoit une représentation de l'état courant de l'environnement — pixels, positions, capteurs — et doit choisir une action optimale.</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-dot" style="background:var(--amber)"></div>
+          <div>
+            <h4>Il choisit une action</h4>
+            <p>Selon sa politique π, l'agent sélectionne une action. En exploration ε-greedy, il choisit parfois aléatoirement pour découvrir de nouvelles stratégies.</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-dot" style="background:var(--blue)"></div>
+          <div>
+            <h4>L'environnement répond</h4>
+            <p>L'environnement transite vers un nouvel état s' et fournit une récompense r. L'agent stocke (s, a, r, s') dans son replay buffer et met à jour ses paramètres.</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-dot" style="background:var(--purple)"></div>
+          <div>
+            <h4>Maximiser la récompense cumulée</h4>
+            <p>L'objectif est de maximiser G_t = Σ γ^k · r_{t+k}, la somme des récompenses futures actualisées par le facteur γ ∈ [0,1].</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GRIDWORLD -->
+<section id="gridworld">
+  <div class="section-header fade-in">
+    <div class="section-eyebrow">03 — Simulation</div>
+    <h2 class="section-title">GridWorld Interactif</h2>
+    <p class="section-desc">Un environnement discret 5×5 où l'agent apprend à naviguer vers l'objectif en évitant les pièges.</p>
+  </div>
+  <div class="gw-layout">
+    <div class="fade-in">
+      <div class="gw-grid" id="grid"></div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(0,229,195,0.4)"></div> Agent</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(245,158,11,0.4)"></div> Objectif</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(239,68,68,0.4)"></div> Piège</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--bg)"></div> Mur</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(59,130,246,0.3)"></div> Chemin</div>
+      </div>
+    </div>
+    <div class="gw-controls fade-in">
+      <div class="gw-info-card">
+        <h4>État de l'agent</h4>
+        <p>Position : <span id="agent-pos" style="font-family:var(--font-mono);color:var(--teal)">(0, 0)</span></p>
+        <p>Étape : <span id="step-count" style="font-family:var(--font-mono);color:var(--amber)">0</span></p>
+        <p>Récompense totale : <span id="total-reward" style="font-family:var(--font-mono);color:var(--teal)">0</span></p>
+        <p>Statut : <span id="agent-status" style="font-family:var(--font-mono);color:var(--text3)">En attente...</span></p>
+      </div>
+      <button class="step-btn" onclick="stepAgent()">▶ Avancer d'un pas</button>
+      <button class="step-btn" onclick="autoPlay()" id="autoBtn">⚡ Auto-jouer</button>
+      <button class="step-btn secondary" onclick="resetGrid()">↺ Réinitialiser</button>
+      <div class="gw-info-card">
+        <h4>Politique Q-table (simplifiée)</h4>
+        <p style="margin-top:4px">L'agent suit une politique ε-greedy apprise. À chaque état, il choisit l'action avec la valeur Q maximale, avec une probabilité d'exploration ε = 0.1.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Q-LEARNING -->
+<section id="q-learning">
+  <div style="grid-column:1/-1" class="section-header fade-in">
+    <div class="section-eyebrow">04 — Algorithme</div>
+    <h2 class="section-title">Q-Learning</h2>
+    <p class="section-desc">L'algorithme fondateur du Deep RL : apprendre une fonction Q(s,a) qui prédit la valeur de chaque action dans chaque état.</p>
+  </div>
+  <div style="display:grid; grid-template-columns:1.1fr 1fr; gap:3rem; align-items:start">
+    <div class="fade-in">
+      <div class="q-formula">
+        <h4>Équation de mise à jour de Bellman</h4>
+        <div class="q-eq">
+          <span class="var">Q</span>(s, a) ← <span class="var">Q</span>(s, a) + <span class="num">α</span> ·<br>
+          &nbsp;&nbsp;[<span class="var">r</span> + <span class="num">γ</span> · max<sub>a'</sub><span class="var">Q</span>(s', a') − <span class="var">Q</span>(s, a)]
+        </div>
+      </div>
+      <div class="q-table">
+        <div class="q-table-head">
+          <div class="q-th">État</div>
+          <div class="q-th">↑ Haut</div>
+          <div class="q-th">↓ Bas</div>
+          <div class="q-th">← Gauche</div>
+          <div class="q-th">→ Droite</div>
+        </div>
+        <div class="q-row">
+          <div class="q-cell">(0,0)</div>
+          <div class="q-cell low">-0.5</div>
+          <div class="q-cell mid">0.2</div>
+          <div class="q-cell low">-0.8</div>
+          <div class="q-cell high">0.7</div>
+        </div>
+        <div class="q-row">
+          <div class="q-cell">(1,2)</div>
+          <div class="q-cell high">0.9</div>
+          <div class="q-cell low">-0.3</div>
+          <div class="q-cell mid">0.1</div>
+          <div class="q-cell mid">0.4</div>
+        </div>
+        <div class="q-row">
+          <div class="q-cell">(2,4)</div>
+          <div class="q-cell mid">0.3</div>
+          <div class="q-cell high">0.8</div>
+          <div class="q-cell low">-0.1</div>
+          <div class="q-cell mid">0.2</div>
+        </div>
+        <div class="q-row">
+          <div class="q-cell">(4,4)</div>
+          <div class="q-cell mid">0.0</div>
+          <div class="q-cell mid">0.0</div>
+          <div class="q-cell mid">0.0</div>
+          <div class="q-cell mid">0.0</div>
+        </div>
+      </div>
+    </div>
+    <div class="fade-in">
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.75rem">
+        <h3 style="font-family:var(--font-head); font-size:16px; margin-bottom:1.5rem">Hyperparamètres</h3>
+        <div class="slider-group">
+          <div class="slider-head">
+            <span class="slider-label">Taux d'apprentissage α</span>
+            <span class="slider-val" id="alpha-val">0.10</span>
+          </div>
+          <input type="range" min="1" max="100" value="10" oninput="document.getElementById('alpha-val').textContent=(this.value/100).toFixed(2)">
+        </div>
+        <div class="slider-group">
+          <div class="slider-head">
+            <span class="slider-label">Facteur d'actualisation γ</span>
+            <span class="slider-val" id="gamma-val">0.95</span>
+          </div>
+          <input type="range" min="1" max="100" value="95" oninput="document.getElementById('gamma-val').textContent=(this.value/100).toFixed(2)">
+        </div>
+        <div class="slider-group">
+          <div class="slider-head">
+            <span class="slider-label">Exploration ε</span>
+            <span class="slider-val" id="eps-val">0.10</span>
+          </div>
+          <input type="range" min="1" max="100" value="10" oninput="document.getElementById('eps-val').textContent=(this.value/100).toFixed(2)">
+        </div>
+        <div class="slider-group">
+          <div class="slider-head">
+            <span class="slider-label">Taille du batch</span>
+            <span class="slider-val" id="batch-val">32</span>
+          </div>
+          <input type="range" min="8" max="256" value="32" step="8" oninput="document.getElementById('batch-val').textContent=this.value">
+        </div>
+        <div style="margin-top:1.5rem; padding:1rem; background:var(--bg); border-radius:8px; border:1px solid var(--border)">
+          <div style="font-family:var(--font-mono); font-size:11px; color:var(--text3); margin-bottom:8px">Convergence estimée</div>
+          <div style="height:4px; background:var(--bg2); border-radius:2px; overflow:hidden">
+            <div style="height:100%; width:68%; background:linear-gradient(90deg,var(--teal),var(--blue)); border-radius:2px"></div>
+          </div>
+          <div style="font-family:var(--font-mono); font-size:11px; color:var(--teal); margin-top:6px">68% — ~320 épisodes restants</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DQN -->
+<section id="dqn">
+  <div class="section-header fade-in">
+    <div class="section-eyebrow">05 — Deep Q-Network</div>
+    <h2 class="section-title">Architecture DQN</h2>
+    <p class="section-desc">Le réseau de neurones remplace la Q-table pour des espaces d'états continus et de haute dimension, comme les images de jeux Atari.</p>
+  </div>
+  <div class="dqn-layout">
+    <div class="fade-in">
+      <div class="nn-diagram">
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--text3);margin-bottom:0.5rem">Architecture réseau — DQN</div>
+        <div class="nn-layer">
+          <div class="nn-layer-label">Input</div>
+          <div class="nn-nodes">
+            <div class="nn-node input">s₁</div>
+            <div class="nn-node input">s₂</div>
+            <div class="nn-node input">s₃</div>
+            <div class="nn-node input">s₄</div>
+            <div class="nn-node input">…</div>
+          </div>
+          <div class="nn-conn">→</div>
+        </div>
+        <div class="nn-layer">
+          <div class="nn-layer-label">Dense 1</div>
+          <div class="nn-nodes">
+            <div class="nn-node hidden">h</div>
+            <div class="nn-node hidden">h</div>
+            <div class="nn-node hidden">h</div>
+            <div class="nn-node hidden">h</div>
+            <div class="nn-node hidden">h</div>
+            <div class="nn-node hidden">h</div>
+          </div>
+          <div class="nn-conn">→</div>
+        </div>
+        <div class="nn-layer">
+          <div class="nn-layer-label">Dense 2</div>
+          <div class="nn-nodes">
+            <div class="nn-node hidden" style="animation-delay:-0.5s">h</div>
+            <div class="nn-node hidden" style="animation-delay:-1.5s">h</div>
+            <div class="nn-node hidden" style="animation-delay:-0.3s">h</div>
+            <div class="nn-node hidden" style="animation-delay:-2s">h</div>
+            <div class="nn-node hidden" style="animation-delay:-1s">h</div>
+            <div class="nn-node hidden" style="animation-delay:-0.8s">h</div>
+          </div>
+          <div class="nn-conn">→</div>
+        </div>
+        <div class="nn-layer">
+          <div class="nn-layer-label">Output</div>
+          <div class="nn-nodes">
+            <div class="nn-node output">Q↑</div>
+            <div class="nn-node output">Q↓</div>
+            <div class="nn-node output">Q←</div>
+            <div class="nn-node output">Q→</div>
+          </div>
+        </div>
+        <div style="margin-top:1rem;padding:1rem;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--text3);margin-bottom:6px">Perte TD (Huber Loss)</div>
+          <div style="font-family:var(--font-mono);font-size:12px;color:var(--teal)">
+            L = E[(r + γ·max Q̂(s',a') − Q(s,a))²]
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dqn-features fade-in">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(0,229,195,0.12)">🔁</div>
+        <div>
+          <h4>Experience Replay</h4>
+          <p>Les transitions sont stockées dans un buffer circulaire. L'entraînement sur des mini-batches aléatoires brise les corrélations temporelles.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(59,130,246,0.12)">🎯</div>
+        <div>
+          <h4>Target Network</h4>
+          <p>Un deuxième réseau dont les poids sont copiés toutes les N étapes fournit des cibles stables, réduisant les oscillations de l'apprentissage.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(139,92,246,0.12)">📈</div>
+        <div>
+          <h4>Double DQN</h4>
+          <p>Sépare la sélection et l'évaluation des actions pour corriger le biais de surestimation des valeurs Q du DQN classique.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(245,158,11,0.12)">⚖️</div>
+        <div>
+          <h4>Dueling DQN</h4>
+          <p>Décompose Q(s,a) = V(s) + A(s,a) pour apprendre séparément la valeur d'un état et l'avantage de chaque action.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLICATIONS -->
+<section id="applications">
+  <div class="section-header fade-in">
+    <div class="section-eyebrow">06 — Algorithmes avancés</div>
+    <h2 class="section-title">Policy Gradient & Frameworks</h2>
+    <p class="section-desc">Les méthodes modernes de Deep RL et les outils pour les implémenter efficacement.</p>
+  </div>
+  <div class="algo-grid">
+    <div class="algo-card fade-in" style="--accent:var(--teal)">
+      <div class="algo-name">PPO</div>
+      <div class="algo-full">// proximal_policy_optimization</div>
+      <div class="algo-body">Standard de l'industrie (OpenAI). Utilise un clipping de la fonction objectif pour des mises à jour conservatrices et stables. Fonctionne en continu et en discret.</div>
+      <div class="algo-chips">
+        <span class="algo-chip">Actor-Critic</span>
+        <span class="algo-chip">Clipping ε</span>
+        <span class="algo-chip">Adam</span>
+        <span class="algo-chip">GPU/CPU</span>
+      </div>
+    </div>
+    <div class="algo-card fade-in" style="--accent:var(--blue)">
+      <div class="algo-name">A2C</div>
+      <div class="algo-full">// advantage_actor_critic</div>
+      <div class="algo-body">Combine un Actor (politique) et un Critic (valeur). L'avantage A(s,a) = Q(s,a) − V(s) réduit la variance des gradients de politique.</div>
+      <div class="algo-chips">
+        <span class="algo-chip">REINFORCE</span>
+        <span class="algo-chip">Baseline</span>
+        <span class="algo-chip">Parallèle</span>
+      </div>
+    </div>
+    <div class="algo-card fade-in" style="--accent:var(--purple)">
+      <div class="algo-name">SAC</div>
+      <div class="algo-full">// soft_actor_critic</div>
+      <div class="algo-body">Maximise à la fois la récompense et l'entropie de la politique, favorisant l'exploration. Très performant sur des tâches de robotique continues.</div>
+      <div class="algo-chips">
+        <span class="algo-chip">Off-policy</span>
+        <span class="algo-chip">Entropie max</span>
+        <span class="algo-chip">Continu</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-family:var(--font-head);font-size:1.5rem;margin-bottom:1.5rem" class="fade-in">Frameworks & Bibliothèques</h3>
+  <div class="frameworks-row">
+    <div class="fw-card fade-in">
+      <span class="fw-icon">🔥</span>
+      <div class="fw-name">PyTorch</div>
+      <div class="fw-desc">Graphe dynamique, autograd, GPU-ready. Idéal pour la recherche et l'implémentation from scratch.</div>
+    </div>
+    <div class="fw-card fade-in">
+      <span class="fw-icon">🧮</span>
+      <div class="fw-name">TensorFlow</div>
+      <div class="fw-desc">Production-ready, TensorBoard intégré, déploiement multi-plateforme via TF Lite et TF.js.</div>
+    </div>
+    <div class="fw-card fade-in">
+      <span class="fw-icon">🏋️</span>
+      <div class="fw-name">Stable Baselines3</div>
+      <div class="fw-desc">Implémentations fiables de PPO, A2C, DQN, SAC. Compatible OpenAI Gym. Idéal pour démarrer rapidement.</div>
+    </div>
+    <div class="fw-card fade-in">
+      <span class="fw-icon">🎮</span>
+      <div class="fw-name">OpenAI Gym</div>
+      <div class="fw-desc">Standard pour les environnements RL. CartPole, Atari, MuJoCo. API simple : reset(), step(), render().</div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<script>
+// ── GRIDWORLD ──
+const GRID = [
+  ['empty','empty','wall','empty','empty'],
+  ['empty','trap','empty','empty','wall'],
+  ['empty','empty','empty','wall','empty'],
+  ['wall','empty','trap','empty','empty'],
+  ['empty','empty','empty','empty','goal'],
+];
+const POLICY = [
+  ['→','→','wall','↓','↓'],
+  ['↑','trap','→','↓','wall'],
+  ['↑','→','→','wall','↓'],
+  ['wall','↑','trap','→','↓'],
+  ['↑','→','→','→','goal'],
+];
+
+let agentR = 0, agentC = 0, steps = 0, totalReward = 0;
+let path = new Set();
+let autoInterval = null;
+
+function initGrid() {
+  const g = document.getElementById('grid');
+  if (!g) return;
+  g.innerHTML = '';
+  for (let r = 0; r < 5; r++) {
+    for (let c = 0; c < 5; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'gw-cell';
+      const key = `${r},${c}`;
+      const type = GRID[r][c];
+      if (r === agentR && c === agentC) {
+        cell.className = 'gw-cell agent';
+        cell.textContent = '🤖';
+      } else if (type === 'goal') {
+        cell.className = 'gw-cell goal';
+        cell.textContent = '🏆';
+      } else if (type === 'trap') {
+        cell.className = 'gw-cell trap';
+        cell.textContent = '💀';
+      } else if (type === 'wall') {
+        cell.className = 'gw-cell wall';
+        cell.textContent = '■';
+      } else if (path.has(key) && !(r === agentR && c === agentC)) {
+        cell.className = 'gw-cell path';
+        cell.textContent = '·';
+      } else {
+        cell.className = 'gw-cell empty';
+      }
+      if (type !== 'wall' && !(r === agentR && c === agentC)) {
+        const val = document.createElement('span');
+        val.className = 'gw-val';
+        const qv = ((Math.sin(r*7+c*3)*0.5)+0.3).toFixed(1);
+        val.textContent = qv;
+        cell.appendChild(val);
+      }
+      g.appendChild(cell);
+    }
+  }
+  document.getElementById('agent-pos').textContent = `(${agentR}, ${agentC})`;
+  document.getElementById('step-count').textContent = steps;
+  document.getElementById('total-reward').textContent = totalReward;
+}
+
+function stepAgent() {
+  const st = document.getElementById('agent-status');
+  if (GRID[agentR][agentC] === 'goal') {
+    st.textContent = '🏆 Objectif atteint!'; st.style.color = 'var(--teal)';
+    if (autoInterval) { clearInterval(autoInterval); autoInterval = null; document.getElementById('autoBtn').textContent = '⚡ Auto-jouer'; }
+    return;
+  }
+  if (GRID[agentR][agentC] === 'trap') {
+    st.textContent = '💀 Tombé dans le piège!'; st.style.color = 'var(--red)';
+    if (autoInterval) { clearInterval(autoInterval); autoInterval = null; document.getElementById('autoBtn').textContent = '⚡ Auto-jouer'; }
+    return;
+  }
+  path.add(`${agentR},${agentC}`);
+  const dir = POLICY[agentR][agentC];
+  let nr = agentR, nc = agentC;
+  if (dir === '↑') nr = Math.max(0, agentR - 1);
+  if (dir === '↓') nr = Math.min(4, agentR + 1);
+  if (dir === '←') nc = Math.max(0, agentC - 1);
+  if (dir === '→') nc = Math.min(4, agentC + 1);
+  if (GRID[nr][nc] !== 'wall') { agentR = nr; agentC = nc; }
+  steps++;
+  const type = GRID[agentR][agentC];
+  let reward = -0.1;
+  if (type === 'goal') { reward = 10; st.textContent = '🏆 Objectif atteint!'; st.style.color = 'var(--teal)'; }
+  else if (type === 'trap') { reward = -5; st.textContent = '💀 Tombé dans le piège!'; st.style.color = 'var(--red)'; }
+  else { st.textContent = '▶ En déplacement...'; st.style.color = 'var(--text3)'; }
+  totalReward = (totalReward + reward).toFixed(1);
+  initGrid();
+}
+
+function autoPlay() {
+  const btn = document.getElementById('autoBtn');
+  if (autoInterval) {
+    clearInterval(autoInterval); autoInterval = null;
+    btn.textContent = '⚡ Auto-jouer';
+  } else {
+    btn.textContent = '⏸ Pause';
+    autoInterval = setInterval(() => {
+      if (GRID[agentR][agentC] === 'goal' || GRID[agentR][agentC] === 'trap') {
+        setTimeout(resetGrid, 800);
+      } else {
+        stepAgent();
+      }
+    }, 350);
+  }
+}
+
+function resetGrid() {
+  agentR = 0; agentC = 0; steps = 0; totalReward = 0;
+  path = new Set();
+  const st = document.getElementById('agent-status');
+  st.textContent = 'En attente...'; st.style.color = 'var(--text3)';
+  initGrid();
+}
+
+// ── SCROLL ANIMATIONS ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ── NAV ACTIVE ──
+const sections = document.querySelectorAll('section[id]');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 80) cur = s.id;
+  });
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + cur);
+  });
+});
+
+initGrid();
+</script>
+</body>
+</html>
